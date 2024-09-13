@@ -1,13 +1,13 @@
 #!/bin/bash
 
-while read input; do
-    value='print'
-    if [ "$input" = "$value" ]; then break; fi
-    echo 'Name:'
-    read varname
-    echo 'Schedule:'
-    read varsched
-    echo 'Team:'
-    read varteam
+while true; do
+    read -p "Name: " varname
+	if [ $varname == "print" ]
+	then 
+	  break
+	else
+	  read -p "Shift: " varsched
+	  read -p "Team: " varteam
+	fi
     echo $varteam $varname $varsched
 done
