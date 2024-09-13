@@ -4,7 +4,12 @@ while true; do
     read -p "Name: " varname
 	if [ $varname == "print" ]
 	then
-	  break
+	  if [[ $varname == "print" && $varsched == '' && $varteam == '' ]]
+	    then
+			# If print is inputted on the first run
+			echo "No data in the database"
+	    break
+	  fi
 	else
 	  read -p "Shift: " varsched
 	  read -p "Team: " varteam
@@ -12,20 +17,22 @@ while true; do
 
 		varteam=$(echo "$varteam" | tr '[:lower:]' '[:upper:]')
 
-		case $varteam in 
+	case $varsched in
+                morning)
+                        vartime="Morning 6am-3pm";;
+                mid)
+                        vartime="Mid 2pm-11pm";;
+                night)
+                        vartime="Night 10pm-7am";;
+                *)
+                        echo "schedule does not exist";;
+        esac
+
+	case $varteam in 
 		A1|A2|A3|B1|B2|B3)
-			echo $varname $varsched $varteam ;;
+			# Send the data to the other file here
+			echo $varname $vartime $varteam checker;;
 		*)
 			echo "team does not exist" ;;
 	esac
-		case $varsched in
-		morning)
-			echo $varteam $varname "Morning 6am-3pm";;
-		mid)
-			echo $varteam $varname "Mid 2pm-11pm";;
-		night)
-			echo $varteam $varname "Night 10pm-7am";;
-		*)	
-			echo "schedule does not exist";;
-	esac	
 done
