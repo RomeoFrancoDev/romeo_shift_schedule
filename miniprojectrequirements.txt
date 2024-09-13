@@ -1,0 +1,52 @@
+﻿Database Print Output Sample
+|	Team		|	Name		|	Shift 	     	|	Time		|
+|	A1		|	Name		|	Night 		|	10pm - 7pm	|
+|	A3		|	Name		|	Mid 		|	2pm - 11pm	|
+|	B1		|	Name		|	Morning	|	6am - 3pm	|
+
+
+Code Input Sample
+Name:
+Shift:
+Team:
+
+
+Code Requirements
+-	if Name: == “print”
+Exit session
+Print table
+-	2 people max per team only , display text and exit
+#Get the number of people on the group
+people_count=$(echo “{groups[$group_name]}” | wc -w)
+#Check if there are less than 2 people in the group
+If [[ $people_count –lt 2 ] ];
+Then
+-	Always loop, exit only if Name: == “print”, or if more than 2 people per team assign
+
+
+
+Input Rules
+Name:
+-	string only, auto capital first letter 
+-	If “print”, then exit, then display database
+-	if more than 2 people per group is present, then display text prompt “More than 2 persons in a group is inputted. Exiting...”, then Exit
+
+Shift: 
+-	string only, case insensitive input
+-	input only morning/Morning, mid/Mid, night//Night
+-	if morning add Morning and 6am – 3pm in the database
+-	if mid add Mid and 2am – 11pm in the database
+-	if night add Night and 10am – 7pm in the database
+
+Team:
+-	string only, 2 character string only, case insensitive
+-	input only A1/a1, A2/a2, A3/a3, B1/b1, B2/b2, B3/b3
+ 
+
+
+
+
+
+
+
+
