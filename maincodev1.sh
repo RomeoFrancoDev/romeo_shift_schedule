@@ -6,6 +6,21 @@ declare -A name_array_3
 
 set_counter=1
 
+count_team_occurrences() {
+    local team_to_check="$1"
+    local count=0
+
+    for array in name_array_1 name_array_2 name_array_3;
+        do
+            eval "team_value=\${$array[Team]}"
+                    if [[ "$team_value" == "$team_to_check" ]];
+                    then
+                        ((count++))
+                    fi
+        done
+    echo $count
+}
+
 while true; do
 
     declare -A name_array
@@ -16,7 +31,7 @@ while true; do
                 if [[ -z ${name_array_1["Shift"]} && -z ${name_array_2["Shift"]} && -z ${name_array_3["Shift"]} ]];
                     then
                         # If print is inputted on the first run
-                        echo "No data in the database"
+                        echo "No data inputted"
                     break
                 else
                         ### Fetch the data from the other file here ###
@@ -84,6 +99,15 @@ while true; do
             varteam=$(echo "$varteam" | tr '[:lower:]' '[:upper:]')
             case $varteam in
                 A1|A2|A3|B1|B2|B3)
+
+                    # Check if same team
+                    team_count=$(count_team_occurrences "$varteam")
+                    if [ $team_count -ge 2 ];
+                        then
+                            echo "Team $varteam already has 2 people please try again. Exiting program."
+                        exit 1
+                    fi
+
                     ### Send the data to the other file here ###
                     #echo Sent the data: Name:$prevname Shift:$vartime Team:$varteam
                     case $set_counter in
