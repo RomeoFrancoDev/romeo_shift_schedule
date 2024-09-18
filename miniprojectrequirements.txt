@@ -1,8 +1,8 @@
-﻿Database Print Output Sample
+Database Print Output Sample
 |	Team		|	Name		|	Shift 	     	|	Time		|
 |	A1		|	Name		|	Night 		|	10pm - 7pm	|
 |	A3		|	Name		|	Mid 		|	2pm - 11pm	|
-|	B1		|	Name		|	Morning	|	6am - 3pm	|
+|	B1		|	Name		|	Morning	|	|	6am - 3pm	|
 
 
 Code Input Sample
