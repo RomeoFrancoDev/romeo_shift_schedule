@@ -1,6 +1,8 @@
 #!/bin/bash
 
 declare -a name_arrays
+data_file="data.txt"
+
 
 # counter for multiple team
 count_team_occurrences() {
@@ -43,21 +45,39 @@ while true; do
     read -p "Name: " varname
         if [ $varname == "print" ]
             then
-                if [ ${#name_arrays[@]} -eq 0 ];
+                if [ ${#name_arrays[@]} -eq 0 ] && [ ! -s "$data_file" ];
                     then
 			echo ""
                         # If print is inputted on the first run
                         echo "No data inputted"
 			echo ""
                     break
-                else
+		elif [ ${#name_arrays[@]} -eq 0 ] && [ -s "$data_file" ];
+		    then
+			echo ""
+		        echo "-----------------------------------------------------------------------------------"
+		        # Print table header
+			printf "%-20s %-20s %-20s %-20s\n" "Team" "Name" "Shift" "Time"
+                        printf "%-20s %-20s %-20s %-20s\n" "--------------------" "--------------------" "--------------------" "--------------------"
+			
+	                # Read and print data from file
+			while IFS= read -r line; 
+			    do
+		                echo "$line"
+			done < "$data_file"
+
+			echo ""	
+		elif [ ${#name_arrays[@]} -ne 0 ] || [ -s "$data_file" ];
+		    then 
 		    echo ""
 		    echo ""	
                     echo "-----------------------------------------------------------------------------------"
                     # Print table header
                     printf "%-20s %-20s %-20s %-20s\n" "Team" "Name" "Shift" "Time"
                     printf "%-20s %-20s %-20s %-20s\n" "--------------------" "--------------------" "--------------------" "--------------------"
-                    # Print table rowsii
+                    
+		    > "$data_file"
+		    # Print table rowsii
                     for entry in "${name_arrays[@]}";
                         do
                             team=$(echo "$entry" | awk -F' ' '{print $4}' | cut -d'=' -f2)
@@ -65,7 +85,9 @@ while true; do
                             shift=$(echo "$entry" | awk -F' ' '{print $2}' | cut -d'=' -f2)
                             time=$(echo "$entry" | awk -F' ' '{print $3}' | cut -d'=' -f2)
 
-                            printf "%-20s %-20s %-20s %-20s\n" "$team" "$name" "$shift" "$time"
+			    printf "%-20s %-20s %-20s %-20s\n" "$team" "$name" "$shift" "$time"
+			    # redirect the output in here to retain
+                            printf "%-20s %-20s %-20s %-20s\n" "$team" "$name" "$shift" "$time" >> "$data_file"
                         done
 
 
