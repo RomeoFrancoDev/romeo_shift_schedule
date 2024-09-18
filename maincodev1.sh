@@ -1,19 +1,15 @@
 #!/bin/bash
 
-declare -A name_array_1
-declare -A name_array_2
-declare -A name_array_3
+declare -a name_arrays
 
-set_counter=1
 
 count_team_occurrences() {
     local to_check="$1"
     local count=0
 
-    for array in name_array_1 name_array_2 name_array_3;
+    for entry in "${name_arrays[@]}";
         do
-            eval "team_value=\${$array[Team]}"
-            if [[ "$team_value" == "$to_check" ]];
+            if [[ "$entry" == *"Team=$to_check"* ]];
                 then
                     ((count++))
                 fi
@@ -24,10 +20,9 @@ count_shift_occurrences() {
     local to_check="$1"
     local count=0
 
-    for array in name_array_1 name_array_2 name_array_3;
+    for entry in "${name_arrays[@]}";
         do
-            eval "shift_value=\${$array[Shift]}"
-            if [[ "$shift_value" == "$to_check" ]];
+            if [[ "$entry" == *"Shift=$to_check"* ]];
                 then
 
                     ((count++))
@@ -45,7 +40,7 @@ while true; do
     read -p "Name: " varname
         if [ $varname == "print" ]
             then
-                if [[ -z ${name_array_1["Shift"]} && -z ${name_array_2["Shift"]} && -z ${name_array_3["Shift"]} ]];
+                if [ ${#name_arrays[@]} -eq 0 ];
                     then
                         # If print is inputted on the first run
                         echo "No data inputted"
@@ -54,37 +49,11 @@ while true; do
                         ### Fetch the data from the other file here ###
                         #echo Fetched the data: Name:$prevname Shift:$vartime Team:$varteam
                         #Print the array
-                        for i in 1 2 3;
+                        for i in "${!name_arrays[@]}";
                         do
-                            case $i in
-                                1)
-                                    name_array=("${name_array_1[@]}")
-                                    echo "Set $i"
-                                    for key in "${!name_array_1[@]}";
-                                    do
-                                        echo "$key: ${name_array_1[$key]}"
-                                    done
-                                    ;;
-                                2)
-                                    name_array=("${name_array_2[@]}")
-                                    echo "Set $i"
-                                    for key in "${!name_array_2[@]}";
-                                    do
-                                        echo "$key: ${name_array_2[$key]}"
-                                    done
-                                    ;;
-                                3)
-                                    name_array=("${name_array_3[@]}")
-                                    echo "Set $i"
-                                    for key in "${!name_array_3[@]}";
-                                    do
-                                        echo "$key: ${name_array_3[$key]}"
-                                    done
-                                    ;;
-                            esac
-
-                        echo ""
-
+                            echo "Set $((i+1))"
+                            echo "${name_arrays[$i]}"
+                            echo ""
                         done
                     break
             fi
@@ -134,32 +103,10 @@ while true; do
                     fi
 
                     ### Send the data to the other file here ###
-                    #echo Sent the data: Name:$prevname Shift:$vartime Team:$varteam
-                    case $set_counter in
-                        1)
-                            name_array_1["Name"]="$prevname"
-                            name_array_1["Shift"]="$vartime"
-                            name_array_1["Team"]="$varteam"
-                            ;;
-                        2)
-                            name_array_2["Name"]="$prevname"
-                            name_array_2["Shift"]="$vartime"
-                            name_array_2["Team"]="$varteam"
-                            ;;
-                        3)
-                            name_array_3["Name"]="$prevname"
-                            name_array_3["Shift"]="$vartime"
-                            name_array_3["Team"]="$varteam"
-                        ;;
-                    esac
-                    ((set_counter++))
-                    if [ $set_counter -gt 3 ];
-                        then
-                            set_counter=1
-                        fi
-                        ;;
-                        ### Delete the current datas after sending ###
-                        # Saka na pag nagawa na yung separaite file
+
+                    entry="Name=$prevname Shift=$vartime Team=$varteam"
+                    name_arrays+=("$entry")
+                    ;;
                 *)
                     echo "Invalid input in Team. Please input (a1-a3), or (b1-b3) only. Try again."
                     varname=''
