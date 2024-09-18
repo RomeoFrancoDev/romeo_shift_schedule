@@ -7,17 +7,34 @@ declare -A name_array_3
 set_counter=1
 
 count_team_occurrences() {
-    local team_to_check="$1"
+    local to_check="$1"
     local count=0
 
     for array in name_array_1 name_array_2 name_array_3;
         do
             eval "team_value=\${$array[Team]}"
-                    if [[ "$team_value" == "$team_to_check" ]];
-                    then
-                        ((count++))
-                    fi
+            if [[ "$team_value" == "$to_check" ]];
+                then
+                    ((count++))
+                fi
         done
+    echo $count
+}
+count_shift_occurrences() {
+    local to_check="$1"
+    local count=0
+
+    for array in name_array_1 name_array_2 name_array_3;
+        do
+            eval "shift_value=\${$array[Shift]}"
+            if [[ "$shift_value" == "$to_check" ]];
+                then
+
+                    ((count++))
+                fi
+
+        done
+
     echo $count
 }
 
@@ -94,6 +111,14 @@ while true; do
                     varteam=''
                     continue;;
             esac
+
+            shift_count=$(count_shift_occurrences "$vartime")
+            if [ $shift_count -ge 2 ];
+                then
+                    echo "Shift $vartime already has 2 people. Exiting program."
+                    exit 1
+                fi
+
             read -p "Team: " varteam
 
             varteam=$(echo "$varteam" | tr '[:lower:]' '[:upper:]')
@@ -127,16 +152,14 @@ while true; do
                             name_array_3["Team"]="$varteam"
                         ;;
                     esac
-
                     ((set_counter++))
                     if [ $set_counter -gt 3 ];
-                    then
-                        set_counter=1
-                    fi
-
-                    ;;
-                    ### Delete the current datas after sending ###
-                    # Saka na pag nagawa na yung separaite file
+                        then
+                            set_counter=1
+                        fi
+                        ;;
+                        ### Delete the current datas after sending ###
+                        # Saka na pag nagawa na yung separaite file
                 *)
                     echo "Invalid input in Team. Please input (a1-a3), or (b1-b3) only. Try again."
                     varname=''
