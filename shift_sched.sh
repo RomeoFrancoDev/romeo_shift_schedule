@@ -2,7 +2,7 @@
 
 declare -a name_arrays
 
-
+# counter for multiple team
 count_team_occurrences() {
     local to_check="$1"
     local count=0
@@ -16,6 +16,7 @@ count_team_occurrences() {
         done
     echo $count
 }
+# counter for multiple shifts
 count_shift_occurrences() {
     local to_check="$1"
     local count=0
@@ -37,19 +38,25 @@ while true; do
 
     declare -A name_array
 
+    echo ""
+    # input for name
     read -p "Name: " varname
         if [ $varname == "print" ]
             then
                 if [ ${#name_arrays[@]} -eq 0 ];
                     then
+			echo ""
                         # If print is inputted on the first run
                         echo "No data inputted"
+			echo ""
                     break
                 else
-                    echo ""
+		    echo ""
+		    echo ""	
+                    echo "-----------------------------------------------------------------------------------"
                     # Print table header
                     printf "%-20s %-20s %-20s %-20s\n" "Team" "Name" "Shift" "Time"
-                    printf "%-20s %-20s %-20s %-20s\n" "-----" "------" "-----" "-----"
+                    printf "%-20s %-20s %-20s %-20s\n" "--------------------" "--------------------" "--------------------" "--------------------"
                     # Print table rowsii
                     for entry in "${name_arrays[@]}";
                         do
@@ -76,16 +83,20 @@ while true; do
             rest_chars=$(printf "%s" "$varname" | cut -c2-)
             prevname="$first_char$rest_chars"
 
+	    # input for sched
             read -p "Shift: " varsched
+	    varsched=$(echo "${varsched^}")
             case $varsched in
-                morning)
+                Morning)
                     vartime="Morning 6am-3pm";;
-                mid)
+                Mid)
                     vartime="Mid 2pm-11pm";;
-                night)
+                Night)
                     vartime="Night 10pm-7am";;
                 *)
-                    echo "Invalid input in Schedule. Please input (morning), (mid), or (night) only. Try again."
+		    echo ""
+                    echo "Invalid input in Schedule. Please input (Morning), (Mid), or (Night) only. Try again."
+		    
                     varname=''
                     prevname=''
                     vartime=''
@@ -97,10 +108,13 @@ while true; do
             shift_count=$(count_shift_occurrences "$vartime")
             if [ $shift_count -ge 2 ];
                 then
+		    echo ""
                     echo "Shift $vartime already has 2 people. Exiting program."
-                    exit 1
+                    echo ""
+		    exit 1
                 fi
 
+	    # input for team
             read -p "Team: " varteam
 
             varteam=$(echo "$varteam" | tr '[:lower:]' '[:upper:]')
@@ -111,19 +125,22 @@ while true; do
                     team_count=$(count_team_occurrences "$varteam")
                     if [ $team_count -ge 2 ];
                         then
+			    echo ""
                             echo "Team $varteam already has 2 people please try again. Exiting program."
-                        exit 1
+                            echo ""
+			exit 1
                     fi
 
-                    ### Send the data to the other file here ###
-
+                    # send the data to the array
                     entry="Name=$prevname Shift=$vartime Team=$varteam"
                     name_arrays+=("$entry")
-                    echo ""
-                    ;;
+                    
+		    ;;
                 *)
-                    echo "Invalid input in Team. Please input (a1-a3), or (b1-b3) only. Try again."
-                    varname=''
+		    echo ""
+                    echo "Invalid input in Team. Please input (A1-A3), or (B1-B3) only. Try again."
+                    
+		    varname=''
                     prevname=''
                     vartime=''
                     varsched=''
